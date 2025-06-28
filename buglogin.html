@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login Lokal</title>
+  <style>
+    body {
+      background-color: #000814;
+      color: #00ccff;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .box {
+      background: #001d3d;
+      padding: 30px;
+      border-radius: 12px;
+      width: 320px;
+      box-shadow: 0 0 20px rgba(0, 204, 255, 0.2);
+    }
+    input, button {
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+    }
+    button {
+      background: #00ccff;
+      color: #000814;
+      font-weight: bold;
+    }
+    .msg {
+      margin-top: 15px;
+      font-size: 0.95em;
+    }
+    .notif {
+      position: fixed;
+      bottom: 250px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #001d3d; /* neon */
+      color: #2ecc71; /* Hijau tulisan & icon */
+      width: 420px; /* Lebih lebar, sekitar 10.5cm */
+      height: 70px; /* Sekitar 3cm */
+      border-radius: 16px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+      font-family: sans-serif;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      z-index: 9999;
+      animation: fadein 0.3s ease;
+      padding: 12px;
+    }
+
+    .notif .icon {
+      font-size: 28px;
+    }
+
+    .notif .text {
+      font-size: 18px;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    .progress-bar {
+      width: 90%;
+      height: 6px;
+      background: #e0e0e0;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: #2ecc71; /* Garis hijau */
+      transform: translateX(-100%);
+      animation: fillProgress 3s linear forwards;
+    }
+
+    @keyframes fillProgress {
+      to {
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes fadein {
+      from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+      to { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+
+    @keyframes fadeout {
+      from { opacity: 1; transform: translateX(-50%) translateY(0); }
+      to { opacity: 0; transform: translateX(-50%) translateY(20px); }
+    }
+     /* Sidebar */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 220px;
+      height: 100vh;
+      background: #000;
+      border-right: 2px solid #00ccff88;
+      padding: 100px 1rem 2rem;
+      box-shadow: 0 0 10px #00ccff55;
+      transform: translateX(-100%);
+      transition: all 0.3s ease;
+      z-index: 999;
+      overflow-y: auto;
+    }
+
+    .sidebar.active {
+      transform: translateX(0);
+    }
+
+    .sidebar h2 {
+      margin-bottom: 1.5rem;
+      text-shadow: 0 0 8px #00ccff;
+    }
+
+    .sidebar a {
+      display: block;
+      color: #00ccff;
+      text-decoration: none;
+      margin: 1rem 0;
+      padding: 0.5rem;
+      border-radius: 6px;
+      transition: 0.2s;
+    }
+
+    .sidebar a:hover {
+      background: #00ccff22;
+    }
+
+    .menu-toggle {
+      position: fixed;
+      top: 1rem;
+      left: 0rem;
+      z-index: 1000;
+      background: #000;
+      border: 2px solid #00ccff;
+      color: #00ccff;
+      padding: 10px 15px;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 0 10px #00ccff55;
+    }
+
+    .container {
+      margin-left: 0;
+      padding: 2rem;
+      transition: margin-left 0.3s ease;
+    }
+
+    .sidebar.active ~ .container {
+      margin-left: 220px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Toggle Button -->
+  <button class="menu-toggle" onclick="toggleSidebar()">☰ Menu</button>
+
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <h2>MENU</h2>
+    <a href="menu.html">beranda</a>
+    <a href="index.html">log out</a>
+    <a href="laporan.html">Laporan</a>
+    <a href="kontak.html">Kontak</a>
+    <a href="pengaturan.html">Pengaturan musik</a>
+    <a href="kredensial.html">kredensial</a>
+    <a href="tentang.html">Tentang</a>
+  </div>
+
+<div class="box">
+  <h2>Login Bot Bug 🔐</h2>
+  <input type="email" id="email" placeholder="Email" />
+  <input type="password" id="password" placeholder="Password" />
+  <button onclick="login()">Login</button>
+  <div class="msg" id="msg"></div>
+</div>
+
+<script>
+  const localUsers = [
+    { email: "investor@gofier.com", password: "134253", username: "Goofieraxis" },
+    { email: "admin@yokoto.com", password: "yokoto", username: "XCAPE" }
+  ];
+
+  const msgEl = document.getElementById("msg");
+
+  function generateLocalID(email, password) {
+    const str = email + password;
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      hash = (hash << 5) - hash + str.charCodeAt(i);
+      hash |= 0;
+    }
+    return "XC-" + Math.abs(hash).toString(16).toUpperCase().slice(0, 6);
+  }
+
+  function login() {
+    const email = document.getElementById("email").value.trim();
+    const pass = document.getElementById("password").value.trim();
+
+    if (!email || !pass) {
+      msgEl.innerHTML = "❌ Isi semua form.";
+      return;
+    }
+
+    const found = localUsers.find(u => u.email === email && u.password === pass);
+    if (found) {
+      const id = generateLocalID(email, pass);
+      localStorage.setItem("userEmail", email);
+      localStorage.setItem("userID", id);
+      window.location.href = "bugtele.html";
+    } else {
+      msgEl.innerHTML = "❌ Login gagal. Cek email/password.";
+    }
+  }
+</script>
+
+<div class="notif" id="notif">
+    <div class="icon">🔒</div>
+    <div class="text">Masukkan password bug wa</div>
+    <div class="progress-bar">
+      <div class="progress-fill"></div>
+    </div>
+  </div>
+
+  <script>
+    // Auto remove notif after 3s
+    setTimeout(() => {
+      const notif = document.getElementById('notif');
+      notif.style.animation = "fadeout 0.3s ease forwards";
+      setTimeout(() => notif.remove(), 300);
+    }, 3500);
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('active');
+    }
+  </script>
+
+</body>
+</html>

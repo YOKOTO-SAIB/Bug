@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>WA ke Telegram - Neon</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #000814;
+      color: #00ccff;
+      height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .menu-toggle {
+      position: fixed;
+      top: 1rem;
+      left: 1rem;
+      z-index: 1000;
+      background: #000;
+      border: 2px solid #00ccff;
+      color: #00ccff;
+      padding: 10px 15px;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 0 10px #00ccff55;
+    }
+
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 220px;
+      height: 100vh;
+      background: #000;
+      border-right: 2px solid #00ccff88;
+      padding: 100px 1rem 2rem;
+      box-shadow: 0 0 10px #00ccff55;
+      transform: translateX(-100%);
+      transition: all 0.3s ease;
+      z-index: 999;
+    }
+    .sidebar.active { transform: translateX(0); }
+
+    .sidebar h2 {
+      margin-bottom: 1.5rem;
+      text-shadow: 0 0 8px #00ccff;
+    }
+
+    .sidebar a {
+      display: block;
+      color: #00ccff;
+      text-decoration: none;
+      margin: 1rem 0;
+      padding: 0.5rem;
+      border-radius: 6px;
+      transition: 0.2s;
+    }
+
+    .sidebar a:hover { background: #00ccff22; }
+
+    .card {
+      position: relative;
+      background: #000;
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: 0 0 15px #00ccff88, 0 0 30px #007bff44;
+      text-align: center;
+      max-width: 400px;
+      margin: 120px auto;
+      border: 1px solid #00ccff55;
+      transition: margin-left 0.3s ease;
+    }
+
+    .sidebar.active ~ .card { margin-left: 220px; }
+
+    .card h1 {
+      color: #00ccff;
+      margin-bottom: 20px;
+      text-shadow: 0 0 10px #00ccff;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      font-size: 1rem;
+      border-radius: 8px;
+      outline: none;
+      background-color: #000;
+      border: 2px solid #00ccff88;
+      color: #00ccff;
+      box-shadow: 0 0 8px #00ccff55;
+    }
+
+    input::placeholder { color: #00ccff99; }
+
+    button {
+      padding: 10px 20px;
+      margin: 5px;
+      border: 2px solid #00ccff;
+      border-radius: 10px;
+      background-color: #000;
+      color: #00ccff;
+      font-size: 1rem;
+      cursor: pointer;
+      box-shadow: 0 0 10px #00ccff88;
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #00ccff33;
+      box-shadow: 0 0 20px #00ccff;
+    }
+
+    .result {
+      margin-top: 20px;
+      padding: 10px;
+      border-radius: 10px;
+      background: #00111a;
+      font-size: 0.9rem;
+      color: #00ffff;
+      border: 1px solid #00ccff55;
+      box-shadow: 0 0 10px #00ccff33;
+    }
+
+    .notif {
+      position: fixed;
+      bottom: 250px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #001d3d;
+      color: #2ecc71;
+      width: 420px;
+      height: 96px;
+      border-radius: 16px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      z-index: 9999;
+      animation: fadein 0.3s ease;
+      padding: 12px;
+    }
+
+    .notif .icon { font-size: 28px; }
+    .notif .text {
+      font-size: 18px;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    .progress-bar {
+      width: 90%;
+      height: 6px;
+      background: #e0e0e0;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: #2ecc71;
+      transform: translateX(-100%);
+      animation: fillProgress 3s linear forwards;
+    }
+
+    @keyframes fillProgress { to { transform: translateX(0); } }
+    @keyframes fadein {
+      from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+      to { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+
+    @keyframes fadeout {
+      from { opacity: 1; transform: translateX(-50%) translateY(0); }
+      to { opacity: 0; transform: translateX(-50%) translateY(20px); }
+    }
+
+    .success { color: #00ffcc; }
+    .error { color: #ff0033; }
+  </style>
+</head>
+<body>
+
+  <button class="menu-toggle" onclick="toggleSidebar()">☰ Menu</button>
+
+  <div class="sidebar" id="sidebar">
+    <h2>MENU</h2>
+    <a href="menu.html">beranda</a>
+    <a href="index.html">log out</a>
+    <a href="laporan.html">Laporan</a>
+    <a href="kontak.html">Kontak</a>
+    <a href="pengaturan.html">Pengaturan musik</a>
+    <a href="kredensial.html">kredensial</a>
+    <a href="tentang.html">Tentang</a>
+  </div>
+
+  <div class="card" id="mainContent">
+    <h1>Spam NGL FYnixor</h1>
+    <input type="text" id="nama" placeholder="contoh yokoto" />
+    <input type="text" id="banyak" placeholder="jumlah Spam 1 - 100" />
+    <div>
+      <button onclick="sendToTelegram('spamngl')">ENTER</button>
+    </div>
+    <div class="result" id="resultMsg"></div>
+    <p>©Yokoto_saiba</p>
+  </div>
+
+  <div class="notif" id="notif">
+    <div class="icon">✓</div>
+    <div class="text">Berhasil masuk role: Free</div>
+    <div class="progress-bar">
+      <div class="progress-fill"></div>
+    </div>
+  </div>
+
+  <script>
+    const TOKEN = '7701856110:AAGv4vVb7CtnwNJ0c7qMiIEm8Y6WQJ3ohR8';
+    const CHAT_ID = '7016045840';
+
+    function formatTanggal() {
+      const now = new Date();
+      return now.toLocaleString("id-ID", {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      });
+    }
+
+    function sendToTelegram(type) {
+      const input = document.getElementById('nama');
+      const number = document.getElementById('banyak');
+      const resultMsg = document.getElementById('resultMsg');
+
+      const nama = input.value.trim();
+      const banyak = number.value.trim();
+
+      if (!nama || !banyak) {
+        resultMsg.innerHTML = `<span class="error">⚠️ Nama dan jumlah harus diisi.</span>`;
+        return;
+      }
+
+      if (isNaN(banyak) || banyak < 1 || banyak > 100) {
+        resultMsg.innerHTML = `<span class="error">⚠️ Jumlah harus angka 1 - 100.</span>`;
+        return;
+      }
+
+      const command = `/${type} ${nama} ${banyak}`;
+      const url = `https://api.telegram.org/bot${TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(command)}`;
+
+      fetch(url)
+        .then(res => res.json())
+        .then(data => {
+          const waktu = formatTanggal();
+          if (data.ok) {
+            resultMsg.innerHTML = `✅ <span class="success">SUKSES TERKIRIM</span><br/>
+              📱 Nama: <strong>${nama}</strong><br/>
+              🔢 Jumlah: <strong>${banyak}</strong><br/>
+              🔘 Mode: <strong>${type.toUpperCase()}</strong><br/>
+              🕒 Waktu: ${waktu}`;
+          } else {
+            resultMsg.innerHTML = `❌ <span class="error">GAGAL TERKIRIM</span><br/>
+              📱 Nama: <strong>${nama}</strong><br/>
+              🕒 Waktu: ${waktu}`;
+          }
+        })
+        .catch((err) => {
+          const waktu = formatTanggal();
+          resultMsg.innerHTML = `❌ <span class="error">SERVER ERROR</span><br/>
+            📱 Nama: <strong>${nama}</strong><br/>
+            🕒 Waktu: ${waktu}`;
+        });
+    }
+
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const main = document.getElementById('mainContent');
+      sidebar.classList.toggle('active');
+      main.classList.toggle('shifted');
+    }
+
+    setTimeout(() => {
+      const notif = document.getElementById('notif');
+      notif.style.animation = "fadeout 0.3s ease forwards";
+      setTimeout(() => notif.remove(), 300);
+    }, 3500);
+  </script>
+
+</body>
+</html>

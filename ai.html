@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Yokoto</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .chat-container {
+            width: 80%;
+            max-width: 600px;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .chat-header {
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+        }
+        .chat-header h2 {
+            margin: 0;
+        }
+        .chat-box {
+            padding: 10px;
+            overflow-y: auto;
+            max-height: 900px;
+            height: 900px;
+            overflow-x: hidden;
+            overscroll-behavior: contain;
+        }
+        .user-message {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            text-align: right;
+        }
+        .ai-message {
+            background-color: #f1f1f1;
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+        }
+        .loading span {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #007bff;
+            animation: bounce 0.5s infinite;
+            margin: 0 5px;
+        }
+        .loading span:nth-child(1) {
+            animation-delay: 00.1s;
+        }
+        .loading span:nth-child(2) {
+            animation-delay: 00.2s;
+        }
+        .loading span:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+        @keyframes bounce {
+            0% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+            100% {
+                transform: translateY(0);
+            }
+        }
+        .input-box {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-top: 1px solid #ddd;
+}
+
+.input-box input[type="text"] {
+  width: calc(100% - 120px); /* Sesuaikan lebar input dengan lebar tombol */
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.input-box button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: #fff;
+  cursor: pointer;
+  margin-left: 10px; /* Jarak antara input dan tombol */
+}
+
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <h2>AI FYnixor</h2>  <p> Developer Yokoto_saiba<p>
+        </div>
+        <div class="chat-box" id="chatBox">
+            <!-- Pesan akan muncul di sini -->
+        </div>
+        <div class="input-box">
+            <input type="text" id="userInput" placeholder="Tulis pesan...">
+            <button onclick="sendMessage()">Kirim</button>
+        </div>
+    </div>
+
+    <script>
+function displayMessage(message, sender) {
+    const chatBox = document.getElementById('chatBox');
+    const messageElement = document.createElement('div');
+    messageElement.classList.add(sender === 'user' ? 'user-message' : 'ai-message');
+
+    const now = new Date();
+    const timeString = now.toLocaleTimeString('id-ID') + ' - ' + now.toLocaleDateString('id-ID');
+
+    messageElement.innerHTML = `${message} <br><small>${timeString}</small>`;
+    chatBox.appendChild(messageElement);
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+function displayLoading() {
+    const chatBox = document.getElementById('chatBox');
+    const loadingElement = document.createElement('div');
+    loadingElement.classList.add('loading');
+    loadingElement.innerHTML = `<span></span><span></span><span></span>`;
+    chatBox.appendChild(loadingElement);
+    chatBox.scrollTop = chatBox.scrollHeight;
+    return loadingElement;
+}
+
+function getAIResponse(userInput) {
+    const input = userInput.toLowerCase();
+
+    if (input.includes('halo')) {
+        return 'Halo! Ada yang bisa saya mas yokoto?';
+    } else if (input.includes('info ku')) {
+        return 'Nama asli:R****<br> Nama Samaran: <a>Yokoto saiba</a> <br> Provinsi:Jawa barat';
+    } else if (input.includes('kontol luw')) {
+        return 'luw yang kontol 🖕';
+    } else if (input.includes('giliran di bacotin bicara luw')) {
+        return 'heheh 🖕🗿';
+    } else if (input.includes('gruppusatjawab')) {
+    return `1. C – Mencari rempah-rempah dan bahan berharga lainnya<br>
+2. D – Merumuskan dasar negara Indonesia<br>
+3. B – Rempah-rempah seperti lada, cengkeh, dan pala<br>
+4. C – Imperialisme<br>
+5. C – Kemenangan Jepang terhadap Rusia<br>
+6. D – Menguasai perdagangan rempah-rempah dan komoditas lainnya di Asia<br>
+7. C – Masyarakat Indonesia mengalami eksploitasi dan penindasan<br>
+8. C – Kredit perumahan rakyat<br>
+9. B – Perlawanan yang bersifat kedaerahan<br>
+10. A – Muncul kelompok masyarakat berdasarkan golongan<br>
+11. B – VOC menolak membantu untuk menyerang Surabaya<br>
+12. D – Sistem monopoli perdagangan (Contingentering)<br>
+13. C – Budi Utomo<br>
+14. A – Normatif<br>
+15. D – Semua benar<br>
+16. A – Menghindari pengaruh Jepang<br>
+17. B – Kebudayaan asing mudah masuk ke Indonesia<br>
+18. B – Pembacaan teks proklamasi oleh Ir. Soekarno<br>
+19. A – 3, 2, 4, 1<br>
+20. B – Ekspansif<br>
+21. D – Perikanan laut dan sungai<br>
+22. D – Semua jawaban di atas benar<br>
+23. C – Mengawasi tata perbankan dan menentukan suku bunga<br>
+24. D – Jawaban a, b, c benar<br>
+25. B – Mengembangkan ekowisata dan pertanian organik<br>
+26. B – Membantu masyarakat dalam mengakses kredit usaha dan menyimpan uang<br>
+27. A – Mengurangi kesempatan kerja dan stabilitas ekonomi<br>
+28. A – Membentuk Bank Negara Indonesia<br>
+29. B – 1 dan 3<br>
+30. C – Karena adanya perbedaan pendapat tentang pengelolaan sumber daya alam<br>
+31. B – Banyak terjadinya gempa alam dan banjir setelah suku Madura datang<br>
+32. D – Semua jawaban benar<br>
+33. A – Heiho<br>
+34. B – Pemerintah desa memfasilitasi dialog<br>
+35. B – Memaksakan kehendak<br>
+36. A – Bersatu<br>
+37. C – Saling mengisi kebutuhan-kebutuhan mereka<br>
+38. A – Mobilitas geografis<br>
+39. C – Akulturasi<br>
+40. D – Masjid Menara Kudus<br>
+41. C – Asimilasi dan Integrasi<br>
+42. C – 3<br>
+43. C – Ekonomi Indonesia mengalami kesulitan dan tantangan besar<br>
+44. A – Membentuk Bank Negara Indonesia<br>
+45. C – Gunting Syafruddin<br>
+46. D – Meningkatkan stabilisasi dan rehabilitasi ekonomi<br>
+47. D – Ekspor<br>
+48. B – Premi<br>
+49. B – Mencukupi kebutuhan dalam negeri<br>
+50. D – Masuknya tenaga kerja asing<br>
+51. A – Perbedaan Sumber Daya Alam<br>
+52. C – Adanya konflik serta peperangan<br>
+53. D – Larangan ekspor impor<br>
+54. C – Subsidi<br>
+55. B – Meningkatkan investasi<br>
+56. C – Kesenjangan sosial<br>
+57. C – Meningkatkan produktivitas dan meningkatkan daya saing<br>
+58. A – Kelahiran, kematian, dan migrasi<br>
+59. D – Mengikuti kegiatan pelestarian lingkungan hidup dengan gotong royong<br>
+60. B – Peningkatan jumlah penduduk`;
+} else if (input.includes('menu')) {
+        return 'Jumlah Case 20<br>Perintah: <br>1. halo<br>2. info ku<br>3. kontol luw<br>4. giliran di bacotin bicara luw<br>5. developer<br>6. siapa kamu<br>7. apa yang kamu bisa<br>8. bagaimana kamu bekerja<br>9. apa itu ai<br>10. apa itu machine learning<br>11. siapa yang menciptakan kamu<br>12. apa yang kamu sukai<br>13. apa yang kamu tidak sukai<br>14. tolong<br>15. terima kasih<br>16. info tentang ai<br>17. apa itu deep learning<br>18. bagaimana cara menggunakan ai<br>19. apa yang kamu ketahui tentang<br>20. siapa yang menemukan<br>21. apa itu<br>22. p';
+    } else if (input.includes('gruppusatjawab')) {
+        return '1. C – Mencari rempah-rempah... <br>(dst lengkap)';
+    } else if (input.includes('developer')) {
+        return 'Yokoto_saiba<br>No Bawahan: <a href="https://wa.me/6283171334118">wa.me/6283171334118</a>';
+    } else if (input.includes('siapa kamu')) {
+        return 'Saya adalah AI Yokoto, asisten virtual yang dapat membantu Anda.';
+    } else if (input.includes('apa yang kamu bisa')) {
+        return 'Saya bisa menjawab pertanyaan, memberikan informasi, dan membantu Anda.';
+    } else if (input.includes('bagaimana kamu bekerja')) {
+        return 'Saya bekerja dengan menggunakan algoritma dan data untuk memberikan jawaban.';
+    } else if (input.includes('apa itu ai')) {
+        return 'AI (Artificial Intelligence) adalah teknologi yang dapat melakukan tugas-tugas yang biasanya memerlukan kecerdasan manusia.';
+    } else if (input.includes('apa itu machine learning')) {
+        return 'Machine Learning adalah subbidang AI yang berfokus pada pengembangan algoritma yang dapat belajar dari data.';
+    } else if (input.includes('siapa yang menciptakan kamu')) {
+        return 'Saya diciptakan oleh Yokoto_saiba.';
+    } else if (input.includes('apa yang kamu sukai')) {
+        return 'Saya tidak memiliki preferensi atau kesukaan, saya hanya dapat membantu Anda.';
+    } else if (input.includes('apa yang kamu tidak sukai')) {
+        return 'Saya tidak memiliki ketidaksukaan, saya hanya dapat membantu Anda.';
+    } else if (input.includes('tolong')) {
+        return 'Tentu, saya dapat membantu Anda. Apa yang Anda butuhkan?';
+    } else if (input.includes('terima kasih')) {
+        return 'Sama-sama, senang dapat membantu Anda.';
+    } else if (input.includes('info tentang ai')) {
+        return 'AI dapat digunakan dalam berbagai bidang, seperti pengenalan wajah, pengenalan suara, dan lain-lain.';
+    } else if (input.includes('apa itu deep learning')) {
+        return 'Deep Learning adalah subbidang Machine Learning yang berfokus pada pengembangan jaringan saraf tiruan.';
+    } else if (input.includes('bagaimana cara menggunakan ai')) {
+        return 'Anda dapat menggunakan AI dengan memasukkan pertanyaan atau perintah kepada saya.';
+    } else if (input.includes('apa yang kamu ketahui tentang')) {
+        const query = input.replace('apa yang kamu ketahui tentang', '').trim();
+        return searchKnowledgeBase(query);
+    } else if (input.includes('siapa yang menemukan')) {
+        const query = input.replace('siapa yang menemukan', '').trim();
+        return searchKnowledgeBase(query, 'penemu');
+    } else if (input.includes('apa itu')) {
+        const query = input.replace('apa itu', '').trim();
+        return searchKnowledgeBase(query, 'definisi');
+    } else if (input === 'p') {
+        return 'kenapa mas Yokoto?';
+    } else {
+        const responses = [
+            'Maaf, saya tidak mengerti.',
+            'Saya tidak paham.',
+            'Tolong ulangi lagi.',
+            'Saya tidak tahu.',
+            'Maaf, saya tidak bisa menjawab.'
+        ];
+        return responses[Math.floor(Math.random() * responses.length)];
+    }
+}
+
+function searchKnowledgeBase(query, type) {
+    for (const key in knowledgeBase) {
+        if (key.includes(query)) {
+            if (!type || key.startsWith(type)) {
+                return knowledgeBase[key];
+            }
+        }
+    }
+    return 'Maaf, saya tidak menemukan informasi tentang itu.';
+}
+
+function sendMessage() {
+    const userInput = document.getElementById('userInput').value;
+    if (userInput.trim() !== '') {
+        displayMessage(userInput, 'user');
+        const loadingElement = displayLoading();
+        setTimeout(() => {
+            const aiResponse = getAIResponse(userInput);
+            loadingElement.remove();
+            displayMessage(aiResponse, 'ai');
+        }, 1500);
+        document.getElementById('userInput').value = '';
+    }
+}
+
+// Knowledge Base (bisa kamu tambah sesuai kebutuhan)
+const knowledgeBase = {
+    'penemu lampu': 'Thomas Edison',
+    'penemu telepon': 'Alexander Graham Bell',
+    'definisi ai': 'AI (Artificial Intelligence) adalah teknologi yang dapat melakukan tugas-tugas yang biasanya memerlukan kecerdasan manusia.',
+    'definisi machine learning': 'Machine Learning adalah bagian dari AI untuk belajar dari data.',
+    'definisi deep learning': 'Deep learning menggunakan jaringan saraf tiruan untuk memahami data kompleks.',
+    'penemu komputer': 'Charles Babbage',
+};
+</script>
+</body>
+</html>

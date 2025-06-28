@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Keluhan / Kendala</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      background: #000814;
+      color: #00ccff;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    /* Sidebar + Toggle */
+    .menu-toggle {
+      position: fixed;
+      top: 1rem;
+      left: 0rem;
+      z-index: 1001;
+      background: #000;
+      border: 2px solid #00ccff;
+      color: #00ccff;
+      padding: 10px 15px;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 0 10px #00ccff55;
+    }
+
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 220px;
+      height: 100vh;
+      background: #000;
+      border-right: 2px solid #00ccff88;
+      padding: 100px 1rem 2rem;
+      box-shadow: 0 0 10px #00ccff55;
+      transform: translateX(-100%);
+      transition: all 0.3s ease;
+      z-index: 1000;
+    }
+
+    .sidebar.active {
+      transform: translateX(0);
+    }
+
+    .sidebar h2 {
+      margin-bottom: 1.5rem;
+      text-shadow: 0 0 8px #00ccff;
+    }
+
+    .sidebar a {
+      display: block;
+      color: #00ccff;
+      text-decoration: none;
+      margin: 1rem 0;
+      padding: 0.5rem;
+      border-radius: 6px;
+      transition: 0.2s;
+    }
+
+    .sidebar a:hover {
+      background: #00ccff22;
+    }
+
+    /* Form Container */
+    .container {
+      max-width: 500px;
+      margin: 100px auto;
+      background: #001d3d;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(0, 204, 255, 0.2);
+      transition: margin-left 0.3s ease;
+    }
+
+    .sidebar.active ~ .container {
+      margin-left: 240px;
+    }
+
+    input, textarea, button {
+      width: 100%;
+      margin-top: 10px;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1em;
+    }
+
+    button {
+      background: #00ccff;
+      color: #000814;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .msg {
+      margin-top: 10px;
+    }
+
+    input[type="file"] {
+      background: #f8f8f8;
+      color: #000;
+    }
+
+    /* Responsive Fix */
+    @media (max-width: 500px) {
+      .sidebar {
+        width: 160px;
+        padding-top: 80px;
+      }
+
+      .sidebar.active ~ .container {
+        margin-left: 0;
+      }
+
+      .container {
+        margin: 100px 20px;
+      }
+
+      .menu-toggle {
+        font-size: 0.9rem;
+        padding: 8px 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Toggle Button -->
+  <button class="menu-toggle" onclick="toggleSidebar()">☰ Menu</button>
+
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <h2>MENU</h2>
+    <a href="menu.html">beranda</a>
+    <a href="index.html">log out</a>
+    <a href="laporan.html">Laporan</a>
+    <a href="kontak.html">Kontak</a>
+    <a href="pengaturan.html">Pengaturan musik</a>
+    <a href="kredensial.html">kredensial</a>
+    <a href="tentang.html">Tentang</a>
+  </div>
+
+  <!-- Form -->
+  <div class="container" id="formContainer">
+    <h2>🛠️ Form Keluhan / Kendala</h2>
+    <input type="text" id="nama" placeholder="Nama kamu">
+    <input type="email" id="email" placeholder="Email (opsional)">
+    <textarea id="pesan" placeholder="Tulis keluhanmu di sini..."></textarea>
+    <input type="file" id="foto" accept="image/*" />
+    <button onclick="kirimTelegram()">Kirim ke Admin</button>
+    <div class="msg" id="msg"></div>
+  </div>
+
+  <script>
+    const token = "8029058225:AAGyUs-egUjwR0Lb2nyRs8JBYaYjY5dz1hI";
+    const chat_id = "7016045840";
+
+    async function kirimTelegram() {
+      const nama = document.getElementById('nama').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const pesan = document.getElementById('pesan').value.trim();
+      const file = document.getElementById('foto').files[0];
+      const msg = document.getElementById('msg');
+
+      if (!nama || !pesan) {
+        msg.innerHTML = "❌ Nama dan pesan wajib diisi.";
+        return;
+      }
+
+      const teks = `📨 *Keluhan Baru*\n👤 Nama: ${nama}\n📧 Email: ${email || '-'}\n📝 Pesan: ${pesan}`;
+
+      try {
+        if (file) {
+          const formData = new FormData();
+          formData.append('chat_id', chat_id);
+          formData.append('caption', teks);
+          formData.append('photo', file);
+          formData.append('parse_mode', 'Markdown');
+
+          const res = await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, {
+            method: 'POST',
+            body: formData
+          });
+
+          if (!res.ok) throw new Error('Gagal upload foto');
+        } else {
+          const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chat_id}&text=${encodeURIComponent(teks)}&parse_mode=Markdown`);
+          if (!res.ok) throw new Error('Gagal kirim pesan');
+        }
+
+        msg.innerHTML = "✅ Keluhan berhasil dikirim!";
+        document.getElementById('nama').value = '';
+        document.getElementById('email').value = '';
+        document.getElementById('pesan').value = '';
+        document.getElementById('foto').value = '';
+      } catch (err) {
+        msg.innerHTML = `⚠️ ${err.message}`;
+      }
+    }
+
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const container = document.getElementById('formContainer');
+      sidebar.classList.toggle('active');
+    }
+  </script>
+
+</body>
+</html>

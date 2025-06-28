@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Terminal H4CK3D</title>
+  <style>
+    body {
+      background-color: black;
+      color: red;
+      font-family: "Courier New", monospace;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+    .center {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .logo {
+      font-size: 2.5em;
+      font-weight: bold;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.5; }
+      100% { opacity: 1; }
+    }
+    .countdown {
+      font-size: 2em;
+      margin: 10px 0;
+    }
+    .input-container, .terminal-container, .warning-container, .launch-container, .success-container {
+      display: none;
+      text-align: center;
+      margin-top: 30px;
+    }
+    input[type="password"], input[type="text"] {
+      padding: 10px;
+      font-size: 1em;
+      background: black;
+      border: 2px solid red;
+      color: red;
+    }
+    #terminal {
+      background: black;
+      color: red;
+      padding: 20px;
+      max-height: 200px;
+      overflow-y: auto;
+      border: 1px solid red;
+      margin-top: 20px;
+    }
+    .green-led {
+      color: lime;
+      font-weight: bold;
+    }
+    button {
+      background: black;
+      color: red;
+      border: 2px solid red;
+      padding: 10px 20px;
+      font-family: monospace;
+      cursor: pointer;
+    }
+    img {
+      max-width: 200px;
+      margin-top: 20px;
+    }
+    iframe {
+      border: 2px solid red;
+      margin-top: 20px;
+      width: 80%;
+      height: 300px;
+    }
+    button.back-btn {
+      margin-top: 20px;
+      padding: 10px 25px;
+      background: black;
+      border: 2px solid red;
+      color: red;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 5px;
+      font-family: monospace;
+      box-shadow: 0 0 8px red;
+      transition: 0.3s;
+    }
+    button.back-btn:hover {
+      background: red;
+      color: black;
+      box-shadow: 0 0 20px red;
+    }
+  </style>
+</head>
+<body>
+  <div class="center">
+    <div class="logo">☢️ HACKKING SYSTEM☢️</div>
+    <div class="countdown" id="countdown"></div>
+  </div>
+
+  <div class="input-container" id="input-container">
+    <p>Silakan ambil password dari website berikut:</p>
+    <a href="password.html">Klik untuk ambil password</a>
+    <br><br>
+    <input type="password" id="password" placeholder="Masukkan Password" />
+    <button onclick="checkPassword()">Enter</button>
+  </div>
+
+  <div class="terminal-container" id="terminal-container">
+    <h3>KETIK /run lalu enter</h3>
+    <input type="text" id="terminal-input" placeholder="Ketik perintah..." onkeydown="handleTerminal(event)" />
+    <div id="terminal"></div>
+  </div>
+
+  <div class="warning-container" id="warning-container">
+    <h2>🚨 MISIL AMERIKA BERHASIL DIRETAS! 🚨</h2>
+    <img src="kaset.png" alt="Warning Logo">
+    <p>🛑 Berhasil diretas 🛑</p>
+    <input type="text" id="koordinat" placeholder="Masukkan Koordinat Target (Contoh: -6.2, 106.8)" />
+    <button onclick="tampilkanPeta()">View Lokasi</button>
+    <div id="map-frame"></div>
+    <br>
+    <button id="launch-btn" onclick="launchMissile()" style="display:none">Luncurkan</button>
+  </div>
+
+  <div class="success-container" id="success-container">
+    <p class="green-led">✅ MISIL BERHASIL DILUNCURKAN!</p>
+    <p class="green-led">🎉 SELAMAT! ANDA TELAH BERHASIL 🎉</p>
+    <img src="kaset.png" alt="Trophy" />
+    <br>
+    <a href="menu.html">
+      <button class="back-btn">🔁 Kembali ke Menu Utama</button>
+    </a>
+  </div>
+
+  <script>
+    let count = 10;
+    const countdownEl = document.getElementById("countdown");
+    const inputContainer = document.getElementById("input-container");
+
+    const interval = setInterval(() => {
+      countdownEl.textContent = `Hitung Mundur: ${count}`;
+      if (count <= 0) {
+        clearInterval(interval);
+        inputContainer.style.display = "block";
+        countdownEl.innerHTML = "Silakan ambil password dari tautan di bawah ini.";
+      }
+      count--;
+    }, 1000);
+
+    function checkPassword() {
+      const pass = document.getElementById("password").value;
+      if (pass === "H4CK3D") {
+        document.getElementById("terminal-container").style.display = "block";
+        document.getElementById("input-container").style.display = "none";
+      } else {
+        alert("Password salah!");
+      }
+    }
+
+    function handleTerminal(event) {
+      if (event.key === "Enter") {
+        const val = event.target.value.trim();
+        if (val === "/run") {
+          spamText();
+        }
+      }
+    }
+
+    function spamText() {
+      const terminal = document.getElementById("terminal");
+      terminal.innerHTML = "";
+      const chars = "01ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+      let interval = setInterval(() => {
+        const line = Array.from({ length: 60 }, () => chars[Math.floor(Math.random() * chars.length)]).join("");
+        const div = document.createElement("div");
+        div.textContent = line;
+        terminal.appendChild(div);
+        terminal.scrollTop = terminal.scrollHeight;
+      }, 100);
+      setTimeout(() => {
+        clearInterval(interval);
+        document.getElementById("warning-container").style.display = "block";
+      }, 20000);
+    }
+
+    function tampilkanPeta() {
+      const koor = document.getElementById("koordinat").value;
+      if (koor.includes(",")) {
+        const [lat, lng] = koor.split(",").map(e => e.trim());
+        const mapFrame = document.getElementById("map-frame");
+        mapFrame.innerHTML = `<iframe src="https://maps.google.com/maps?q=${lat},${lng}&z=15&output=embed"></iframe>`;
+        document.getElementById("launch-btn").style.display = "inline-block";
+      } else {
+        alert("Koordinat tidak valid. Gunakan format: latitude,longitude");
+      }
+    }
+
+    function launchMissile() {
+      const koor = document.getElementById("koordinat").value;
+      if (koor) {
+        alert("Misil dikirim ke koordinat: " + koor);
+        document.getElementById("warning-container").style.display = "none";
+        document.getElementById("success-container").style.display = "block";
+      } else {
+        alert("Masukkan koordinat dulu bro!");
+      }
+    }
+  </script>
+</body>
+</html>

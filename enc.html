@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Encrypt & Decrypt - Neon Style</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #0d0d0d;
+      color: #00ffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+    }
+
+    h2, h3 {
+      text-shadow: 0 0 10px #00ffff;
+    }
+
+    textarea {
+      width: 90%;
+      max-width: 600px;
+      height: 120px;
+      margin: 12px 0;
+      padding: 15px;
+      border: none;
+      border-radius: 10px;
+      background-color: #111;
+      color: #00ffff;
+      box-shadow: 0 0 10px #00ffff33, 0 0 5px #00ffff22 inset;
+      font-size: 1rem;
+      resize: vertical;
+    }
+
+    button {
+      background-color: #00ffff;
+      border: none;
+      border-radius: 8px;
+      color: #000;
+      padding: 12px 24px;
+      font-size: 1rem;
+      margin: 10px;
+      cursor: pointer;
+      box-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff88;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px #00ffff, 0 0 30px #00ffffaa;
+    }
+
+    @media (max-width: 600px) {
+      textarea {
+        font-size: 0.9rem;
+      }
+
+      button {
+        width: 80%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h2>🔐 Base64 Encrypt & Decrypt</h2>
+
+  <textarea id="inputText" placeholder="Masukkan teks di sini..."></textarea>
+
+  <div>
+    <button onclick="encryptText()">🔒 Encrypt</button>
+    <button onclick="decryptText()">🔓 Decrypt</button>
+  </div>
+
+  <h3>✨ Hasil:</h3>
+  <textarea id="outputText" readonly placeholder="Hasil enkripsi atau dekripsi akan muncul di sini..."></textarea>
+
+  <script>
+    function encryptText() {
+      const input = document.getElementById("inputText").value;
+      const encoded = btoa(unescape(encodeURIComponent(input)));
+      document.getElementById("outputText").value = encoded;
+    }
+
+    function decryptText() {
+      const input = document.getElementById("inputText").value;
+      try {
+        const decoded = decodeURIComponent(escape(atob(input)));
+        document.getElementById("outputText").value = decoded;
+      } catch (e) {
+        alert("⚠️ Teks yang dimasukkan bukan Base64 yang valid!");
+      }
+    }
+  </script>
+</body>
+</html>

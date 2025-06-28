@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Caesar Cipher Enkripsi & Dekripsi</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #0d1117;
+      color: #c9d1d9;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+    }
+
+    h1 {
+      color: #58a6ff;
+      margin-bottom: 30px;
+      text-align: center;
+      text-shadow: 0 0 10px #58a6ff55;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      width: 100%;
+      max-width: 500px;
+      background: #161b22;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px #58a6ff22;
+    }
+
+    input[type="text"] {
+      padding: 12px;
+      font-size: 1rem;
+      border-radius: 8px;
+      border: 1px solid #30363d;
+      background: #0d1117;
+      color: #fff;
+    }
+
+    button {
+      padding: 10px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      background-color: #238636;
+      color: white;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    button:hover {
+      background-color: #2ea043;
+    }
+
+    #hasil {
+      margin-top: 20px;
+      width: 100%;
+      max-width: 500px;
+      height: 200px;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #30363d;
+      background: #0d1117;
+      color: #c9d1d9;
+      resize: vertical;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔐 Caesar Cipher</h1>
+  <form onsubmit="return false">
+    <input type="text" id="teks" placeholder="Masukkan teks di sini...">
+    <button onclick="enkripsi()">Enkripsi 🔒</button>
+    <button onclick="dekripsi()">Dekripsi 🔓</button>
+  </form>
+  <textarea id="hasil" placeholder="Hasil akan muncul di sini..." readonly></textarea>
+
+  <script>
+    function enkripsi() {
+      const teks = document.getElementById("teks").value;
+      let hasil = "";
+      for (let i = 0; i < teks.length; i++) {
+        let kode = teks.charCodeAt(i);
+        if (kode >= 65 && kode <= 90) {
+          hasil += String.fromCharCode((kode - 65 + 3) % 26 + 65);
+        } else if (kode >= 97 && kode <= 122) {
+          hasil += String.fromCharCode((kode - 97 + 3) % 26 + 97);
+        } else {
+          hasil += teks[i];
+        }
+      }
+      document.getElementById("hasil").value += `Hasil Enkripsi:\n${hasil}\n\n`;
+    }
+
+    function dekripsi() {
+      const teks = document.getElementById("teks").value;
+      let hasil = "";
+      for (let i = 0; i < teks.length; i++) {
+        let kode = teks.charCodeAt(i);
+        if (kode >= 65 && kode <= 90) {
+          hasil += String.fromCharCode((kode - 65 - 3 + 26) % 26 + 65);
+        } else if (kode >= 97 && kode <= 122) {
+          hasil += String.fromCharCode((kode - 97 - 3 + 26) % 26 + 97);
+        } else {
+          hasil += teks[i];
+        }
+      }
+      document.getElementById("hasil").value += `Hasil Dekripsi:\n${hasil}\n\n`;
+    }
+  </script>
+</body>
+</html>
